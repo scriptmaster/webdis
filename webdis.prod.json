@@ -8,7 +8,7 @@
 	"http_port":	7379,
 	"threads":	4,
 
-	"daemonize":	true,
+	"run_in_background":	true,
 
 	"database":	0,
 

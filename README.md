@@ -219,7 +219,7 @@ Follow this table to diagnose issues with SSL connections to Redis.
 * Cross-origin requests, usable with XMLHttpRequest2 (Cross-Origin Resource Sharing - CORS).
 * [File upload](#file-upload) with `PUT`.
 * With the JSON output, the return value of INFO is parsed and transformed into an object.
-* Optionally run as a daemon process: set `"daemonize": true` and `"pidfile": "/var/run/webdis.pid"` in webdis.json.
+* Optionally run in background: set `"run_in_background": true` and `"pidfile": "/var/run/webdis.pid"` in webdis.json.
 * Default root object: Add `"default_root": "/GET/index.html"` in webdis.json to substitute the request to `/` with a Redis request.
 * HTTP request limit with `http_max_request_size` (in bytes, set to 128 MB by default).
 * Database selection in the URL, using e.g. `/7/GET/key` to run the command on DB 7.
@@ -474,7 +474,7 @@ Webdis supports WebSocket clients implementing [RFC 6455](https://datatracker.ie
 
 ```json
 {
-    "daemonize": false,
+    "run_in_background": false,
     "websockets": true,
 }
 ```

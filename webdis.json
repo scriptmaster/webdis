@@ -10,7 +10,7 @@
 	"threads":	5,
 	"pool_size": 20,
 
-	"daemonize":	false,
+	"run_in_background":	false,
 	"websockets":	false,
 
 	"database":	0,

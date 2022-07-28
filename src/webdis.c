@@ -7,6 +7,10 @@ main(int argc, char *argv[]) {
 
 	struct server *s;
 
+#ifdef DEBUG
+	printf("Starting kingdom\n");
+#endif
+
 	if(argc > 1) {
 		s = server_new(argv[1]);
 	} else {

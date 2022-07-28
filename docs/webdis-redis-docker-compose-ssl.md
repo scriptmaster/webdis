@@ -148,7 +148,7 @@ And add a key named `"ssl"` at the same depth as the two keys above (e.g. just u
     "threads": 5,
     "pool_size": 20,
 
-    "daemonize": false,
+    "run_in_background": false,
     "websockets": false,
 
     "database": 0,

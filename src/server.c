@@ -180,11 +180,11 @@ server_can_accept(int fd, short event, void *ptr) {
 }
 
 /**
- * Daemonize server.
+ * run_in_background server.
  * (taken from Redis)
  */
 static void
-server_daemonize(struct server *s, const char *pidfile) {
+server_run_in_background(struct server *s, const char *pidfile) {
 	int fd;
 
 	if (fork() != 0) exit(0); /* parent exits */
@@ -261,12 +261,14 @@ server_start(struct server *s) {
 
 	/* initialize libevent */
 	s->base = event_base_new();
+	//printf("Initialized libevent\n");
 
 	/* initialize logging before forking */
 	slog_init(s);
+	//printf("Initialized logging before forking\n");
 
-	if(s->cfg->daemonize) {
-		server_daemonize(s, s->cfg->pidfile);
+	if(s->cfg->run_in_background) {
+		server_run_in_background(s, s->cfg->pidfile);
 
 		/* sometimes event mech gets lost on fork */
 		if(event_reinit(s->base) != 0) {
@@ -282,10 +284,7 @@ server_start(struct server *s) {
 	/* install signal handlers */
 	server_install_signal_handlers(s);
 
-	/* start worker threads */
-	for(i = 0; i < s->cfg->http_threads; ++i) {
-		worker_start(s->w[i]);
-	}
+	// worker start and socket setup or swap the order?
 
 	/* create socket */
 	s->fd = socket_setup(s, s->cfg->http_host, s->cfg->http_port);
@@ -293,9 +292,14 @@ server_start(struct server *s) {
 		return -1;
 	}
 
+	/* start worker threads */ 
+	for(i = 0; i < s->cfg->http_threads; ++i) {
+		worker_start(s->w[i]);
+	}
+
 	/*set keepalive socket option to do with half connection*/
-        int keep_alive = 1;
-        setsockopt(s->fd , SOL_SOCKET, SO_KEEPALIVE, (void*)&keep_alive, sizeof(keep_alive));
+	int keep_alive = 1;
+	setsockopt(s->fd , SOL_SOCKET, SO_KEEPALIVE, (void*)&keep_alive, sizeof(keep_alive));
 
 	/* start http server */
 	event_set(&s->ev, s->fd, EV_READ | EV_PERSIST, server_can_accept, s);
@@ -307,7 +311,7 @@ server_start(struct server *s) {
 		return -1;
 	}
 
-	/* initialize fsync timer once libevent is set up */
+	/* initialize fsync timer after libevent is set up */
 	slog_fsync_init(s);
 
 	slog(s, WEBDIS_INFO, "Webdis " WEBDIS_VERSION " up and running", 0);

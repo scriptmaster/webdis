@@ -6,3 +6,5 @@ websocket
 *.png
 pubsub
 *.d
+.vscode
+tests/_

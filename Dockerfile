@@ -6,7 +6,7 @@ RUN wget -q https://api.github.com/repos/nicolasff/webdis/tags -O /dev/stdout | 
 RUN wget https://github.com/nicolasff/webdis/archive/$(cat latest).tar.gz -O webdis-latest.tar.gz
 RUN tar -xvzf webdis-latest.tar.gz
 RUN cd webdis-$(cat latest) && make && make install && make clean && make SSL=1 && cp webdis /usr/local/bin/webdis-ssl && cd ..
-RUN sed -i -e 's/"daemonize":.*true,/"daemonize": false,/g' /etc/webdis.prod.json
+RUN sed -i -e 's/"run_in_background":.*true,/"run_in_background": false,/g' /etc/webdis.prod.json
 
 # main image
 FROM alpine:3.14.3

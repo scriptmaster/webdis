@@ -94,7 +94,7 @@ conf_read(const char *filename) {
 	conf->logfile = "webdis.log";
 	conf->log_fsync.mode = LOG_FSYNC_AUTO;
 	conf->verbosity = WEBDIS_NOTICE;
-	conf->daemonize = 0;
+	conf->run_in_background = 0;
 	conf->pidfile = "webdis.pid";
 	conf->database = 0;
 	conf->pool_size_per_thread = 2;
@@ -186,10 +186,10 @@ conf_read(const char *filename) {
 					tmp, WEBDIS_ERROR, WEBDIS_TRACE);
 			}
 			conf->verbosity = (tmp < 0 ? WEBDIS_ERROR : (tmp > WEBDIS_TRACE ? WEBDIS_TRACE : (log_level)tmp));
-		} else if(strcmp(json_object_iter_key(kv), "daemonize") == 0 && (json_typeof(jtmp) == JSON_TRUE || json_typeof(jtmp) == JSON_FALSE)) {
-			conf->daemonize = (json_typeof(jtmp) == JSON_TRUE) ? 1 : 0;
-		} else if(strcmp(json_object_iter_key(kv), "daemonize") == 0 && json_typeof(jtmp) == JSON_STRING) {
-			conf->daemonize = is_true_free(conf_string_or_envvar(json_string_value(jtmp)));
+		} else if(strcmp(json_object_iter_key(kv), "run_in_background") == 0 && (json_typeof(jtmp) == JSON_TRUE || json_typeof(jtmp) == JSON_FALSE)) {
+			conf->run_in_background = (json_typeof(jtmp) == JSON_TRUE) ? 1 : 0;
+		} else if(strcmp(json_object_iter_key(kv), "run_in_background") == 0 && json_typeof(jtmp) == JSON_STRING) {
+			conf->run_in_background = is_true_free(conf_string_or_envvar(json_string_value(jtmp)));
 		} else if(strcmp(json_object_iter_key(kv),"pidfile") == 0 && json_typeof(jtmp) == JSON_STRING){
 			conf->pidfile = conf_string_or_envvar(json_string_value(jtmp));
 		} else if(strcmp(json_object_iter_key(kv), "websockets") == 0 && (json_typeof(jtmp) == JSON_TRUE || json_typeof(jtmp) == JSON_FALSE)) {

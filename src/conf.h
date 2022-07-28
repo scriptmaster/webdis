@@ -27,8 +27,8 @@ struct conf {
 	/* pool size, one pool per worker thread */
 	int pool_size_per_thread;
 
-	/* daemonize process, off by default */
-	int daemonize;
+	/* run_in_background process, off by default */
+	int run_in_background;
 	char *pidfile;
 
 	/* WebSocket support, off by default */
