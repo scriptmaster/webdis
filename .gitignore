@@ -8,3 +8,5 @@ pubsub
 *.d
 .vscode
 tests/_
+*.gcno
+*.rdb
