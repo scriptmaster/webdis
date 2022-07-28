@@ -85,7 +85,7 @@ conf_read(const char *filename) {
 	conf = calloc(1, sizeof(struct conf));
 	conf->redis_host = strdup("127.0.0.1");
 	conf->redis_port = 6379;
-	conf->http_host = strdup("0.0.0.0");
+	conf->http_host = strdup("127.0.0.1");
 	conf->http_port = 7379;
 	conf->http_max_request_size = 128*1024*1024;
 	conf->http_threads = 4;

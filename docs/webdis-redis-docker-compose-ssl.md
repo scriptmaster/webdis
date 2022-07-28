@@ -142,7 +142,7 @@ And add a key named `"ssl"` at the same depth as the two keys above (e.g. just u
     "redis_host": "redis",
     "redis_port": 6380,
 
-    "http_host": "0.0.0.0",
+    "http_host": "127.0.0.1",
     "http_port": 7379,
 
     "threads": 5,
@@ -194,7 +194,7 @@ Then, edit `./config/redis.conf` and uncomment the following lines and set their
 Then change line 75 which starts with `bind`, so that it looks like this:
 
 ```
-bind 0.0.0.0
+bind 127.0.0.1
 ```
 
 You can also grab `redis.conf` from [this Gist](https://gist.github.com/nicolasff/513d3ebd9d6f4268d6deb1d979fa44b8) which contains a Redis 6.2.6 config file with the required changes.
