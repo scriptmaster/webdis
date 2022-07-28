@@ -46,7 +46,7 @@ endif
 # if `make` is run with DEBUG=1, include debug symbols
 DEBUG_FLAGS=
 ifeq ($(DEBUG),1)
-	DEBUG_FLAGS += -O0
+	DEBUG_FLAGS += -O0 -g
 	ifeq ($(shell cc -v 2>&1 | grep -cw 'gcc version'),1) # GCC used: add GDB debugging symbols
 		DEBUG_FLAGS += -ggdb3
 	else ifeq ($(shell gcc -v 2>&1 | grep -cw 'clang version'),1) # Clang used: add LLDB debugging symbols
@@ -108,12 +108,22 @@ install: $(OUT) $(INSTALL_DIRS)
 
 WEBDIS_PORT ?= 7379
 
-test_all: test perftest
+test_all: test perftest memtest
 
 test:
 	python3 tests/basic.py
 	python3 tests/limits.py
 	./tests/pubsub -p $(WEBDIS_PORT)
+
+run:
+	./webdis &
+
+watch:
+	watchexec -e c,h -w src/ make all run
+
+memtest:
+	DEBUG=1 make all
+	valgrind ./webdis
 
 perftest:
 	# This is a performance test that requires apache2-utils and curl
