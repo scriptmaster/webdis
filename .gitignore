@@ -10,3 +10,4 @@ pubsub
 tests/_
 *.gcno
 *.rdb
+webdis.pid

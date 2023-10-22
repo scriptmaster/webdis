@@ -5,8 +5,8 @@ B64_OBJS?=src/b64/cencode.o
 FORMAT_OBJS?=src/formats/json.o src/formats/raw.o src/formats/common.o src/formats/custom-type.o
 HTTP_PARSER_OBJS?=src/http-parser/http_parser.o
 
-CFLAGS ?= -Wall -Wextra -Isrc -Isrc/jansson/src -Isrc/http-parser -MD
-LDFLAGS ?= -levent -pthread
+CFLAGS += -Wall -Wextra -Isrc -Isrc/jansson/src -Isrc/http-parser -MD
+LDFLAGS += -levent -pthread
 
 # Pass preprocessor macros to the compile invocation
 CFLAGS += $(CPPFLAGS)
