@@ -47,37 +47,37 @@ Webdis images are published on [Docker Hub](https://hub.docker.com/r/nicolas/web
 ### Docker Hub
 
 ```sh
-$ docker pull nicolas/webdis:0.1.20
+$ docker pull nicolas/webdis:0.1.22
 $ docker pull nicolas/webdis:latest
 ```
 Starting from release `0.1.12` and including `latest`, Docker Hub images are signed ([download public key](nicolasff.pub)). You should see the following key ID if you verify the trust:
 
 ```
-$ docker trust inspect nicolas/webdis:0.1.20 --pretty
+$ docker trust inspect nicolas/webdis:0.1.22 --pretty
 
-Signatures for nicolas/webdis:0.1.20
+Signatures for nicolas/webdis:0.1.22
 
 SIGNED TAG   DIGEST                                                             SIGNERS
-0.1.20       e61e962a55efab0a44a4b0de7017fdc614edadb19482f20f9e32b27f15878707   (Repo Admin)
+0.1.22       5a7d342e3a9e5667fe05f045beae4b5042681d1d737f60843b7dfd11f96ab72f   (Repo Admin)
 
-List of signers and their keys for nicolas/webdis:0.1.20
+List of signers and their keys for nicolas/webdis:0.1.22
 
 SIGNER      KEYS
 nicolasff   dd0768b9d35d
 
-Administrative keys for nicolas/webdis:0.1.20
+Administrative keys for nicolas/webdis:0.1.22
 
   Repository Key:	fed0b56b8a8fd4d156fb2f47c2e8bd3eb61948b72a787c18e2fa3ea3233bba1a
   Root Key:	40be21f47831d593892370a8e3fc5bfffb16887c707bd81a6aed2088dc8f4bef
 ```
 
 The signing keys are listed on [this documentation page](docs/webdis-docker-content-trust.md#-key-ids); please make sure they match what you see.
-
+The same documentation page details how to [verify the signatures of multi-architecture images](docs/webdis-docker-content-trust.md), and the tree of manifests used to build them.
 
 ### Amazon Elastic Container Registry (ECR)
 
 ```sh
-$ docker pull public.ecr.aws/nicolas/webdis:0.1.20
+$ docker pull public.ecr.aws/nicolas/webdis:0.1.22
 $ docker pull public.ecr.aws/nicolas/webdis:latest
 ```
 
@@ -87,7 +87,7 @@ The consequence is that [Webdis images on ECR](https://gallery.ecr.aws/nicolas/w
 
 They can still be verified, since the images uploaded there use the exact same hash as the ones on Docker Hub, which _are_ signed. This means that you can verify the signature using the `docker trust inspect` command described above, as long as you **also** make sure that the image hash associated with the image on ECR matches the one shown on Docker Hub.
 
-For more details about Content Trust validation with ECR images, refer to the article titled [Webdis and Docker Content Trust](docs/webdis-docker-content-trust.md#webdis-and-docker-content-trust) in the [Webdis documentation](docs/README.md#webdis-documentation).
+For more details about Content Trust validation with ECR images, refer to the article titled [Webdis and Docker Content Trust](docs/webdis-docker-content-trust.md) in the [Webdis documentation](docs/README.md).
 
 ## Multi-architecture images
 
@@ -123,6 +123,18 @@ To stop it:
 $ docker stop webdis-test
 f0a2763fd456
 ```
+
+## Docker images and embedded Redis
+
+:information_source: The Docker images [provided on Docker Hub](https://hub.docker.com/r/nicolas/webdis) under `nicolas/webdis` contain both Webdis and an embedded Redis server. They were built this way to make it easy to [try Webdis](#try-in-docker) without having to configure a Docker deployment with two containers, but this is likely not the best way to run Webdis in production.
+
+The following documentation pages cover various such use cases:
+- [Running Webdis in Docker with an external Redis instance](docs/webdis-docker-external-redis.md)
+- [Running Webdis and Redis in Docker Compose](docs/webdis-redis-docker-compose.md)
+- [Running Webdis and Redis in Docker Compose with SSL connections](docs/webdis-redis-docker-compose-ssl.md)
+
+More articles are available in the [Webdis documentation](docs/README.md).
+
 
 # Building Webdis with SSL support
 
@@ -204,6 +216,7 @@ Follow this table to diagnose issues with SSL connections to Redis.
 * [WebSocket support](#websockets) (Currently using the specification from [RFC 6455](https://datatracker.ietf.org/doc/html/rfc6455)).
 * Connects to Redis using a TCP or UNIX socket.
 * Support for [secure connections to Redis](#configuring-webdis-with-ssl) (requires [Redis 6 or newer](https://redis.io/topics/encryption)).
+* Support for "Keep-Alive" connections to Redis: add `"hiredis": { "keep_alive_sec": 15 }` to `webdis.json` to enable it with the default value. See the [Hiredis documentation](https://github.com/redis/hiredis/tree/e07ae7d3b6248be8be842eca3e1e97595a17aa1a#other-configuration-using-socket-options) for details, the value configured in `webdis.json` is the `interval` passed to `redisEnableKeepAliveWithInterval`. Important: note how it is used to set the value for `TCP_KEEPALIVE` (the same value) _and_ to compute the value for `TCP_KEEPINTVL` (integer, set to 1/3 × `interval`).
 * Restricted commands by IP range (CIDR subnet + mask) or HTTP Basic Auth, returning 403 errors.
 * Support for Redis authentication in the config file: set `redis_auth` to a single string to use a password value, or to an array of two strings to use username+password auth ([new in Redis 6.0](https://redis.io/commands/auth)).
 * Environment variables can be used as values in the config file, starting with `$` and in all caps (e.g. `$REDIS_HOST`).
@@ -226,16 +239,16 @@ Follow this table to diagnose issues with SSL connections to Redis.
 
 # Ideas, TODO…
 * Add better support for PUT, DELETE, HEAD, OPTIONS? How? For which commands?
-	* This could be done using a “strict mode” with a table of commands and the verbs that can/must be used with each command. Strict mode would be optional, configurable. How would webdis know of new commands remains to be determined.
+    * This could be done using a “strict mode” with a table of commands and the verbs that can/must be used with each command. Strict mode would be optional, configurable. How would webdis know of new commands remains to be determined.
 * MULTI/EXEC/DISCARD/WATCH are disabled at the moment; find a way to use them.
 * Support POST of raw Redis protocol data, and execute the whole thing. This could be useful for MULTI/EXEC transactions.
 * Enrich config file:
-	* Provide timeout (maybe for some commands only?). What should the response be? 504 Gateway Timeout? 503 Service Unavailable?
+    * Provide timeout (maybe for some commands only?). What should the response be? 504 Gateway Timeout? 503 Service Unavailable?
 * Multi-server support, using consistent hashing.
 * SSL/TLS?
-	* It makes more sense to terminate SSL with nginx used as a reverse-proxy.
+    * It makes more sense to terminate SSL with nginx used as a reverse-proxy.
 * SPDY?
-	* SPDY is mostly useful for parallel fetches. Not sure if it would make sense for Webdis.
+    * SPDY is mostly useful for parallel fetches. Not sure if it would make sense for Webdis.
 * Send your ideas using the github tracker, on twitter [@yowgi](https://twitter.com/yowgi) or by e-mail to n.favrefelix@gmail.com.
 
 # HTTP error codes
@@ -243,9 +256,9 @@ Follow this table to diagnose issues with SSL connections to Redis.
 * Redis is unreachable: 503 Service Unavailable.
 * Matching ETag sent using `If-None-Match`: 304 Not Modified.
 * Could also be used:
-	* Timeout on the redis side: 503 Service Unavailable.
-	* Missing key: 404 Not Found.
-	* Unauthorized command (disabled in config file): 403 Forbidden.
+    * Timeout on the redis side: 503 Service Unavailable.
+    * Missing key: 404 Not Found.
+    * Unauthorized command (disabled in config file): 403 Forbidden.
 
 # Command format
 The URI `/COMMAND/arg0/arg1/.../argN.ext` executes the command on Redis and returns the response to the client. GET, POST, and PUT are supported:
@@ -263,11 +276,11 @@ Special characters: `/` and `.` have special meanings, `/` separates arguments a
 Webdis can connect to a Redis server that requires credentials.
 For Redis versions before 6.0, provide the password as a single string in `webdis.json` using the key `"redis_auth"`. For example:
 ```json
-	"redis_auth": "enter-password-here"
+    "redis_auth": "enter-password-here"
 ```
 Redis 6.0 introduces a more granular [access control system](https://redis.io/topics/acl) and switches from a single password to a pair of username and password. To use these two values with Webdis, set `"redis_auth"` to an array containing the two strings, e.g.
 ```json
-	"redis_auth": ["my-username", "my-password"]
+    "redis_auth": ["my-username", "my-password"]
 ```
 This new authentication system is only supported in Webdis 0.1.13 and above.
 
@@ -282,27 +295,42 @@ Each ACL contains two lists of commands, `enabled` and `disabled`. All commands 
 Examples:
 ```json
 {
-	"disabled": ["DEBUG", "FLUSHDB", "FLUSHALL"],
+    "disabled": ["DEBUG", "FLUSHDB", "FLUSHALL"],
 },
 
 {
-	"http_basic_auth": "user:password",
-	"disabled":        ["DEBUG", "FLUSHDB", "FLUSHALL"],
-	"enabled":         ["SET"]
+    "http_basic_auth": "user:password",
+    "disabled":        ["DEBUG", "FLUSHDB", "FLUSHALL"],
+    "enabled":         ["SET"]
 },
 
 {
-	"ip":      "192.168.10.0/24",
-	"enabled": ["SET"]
+    "ip":      "192.168.10.0/24",
+    "enabled": ["SET"]
 },
 
 {
-	"http_basic_auth": "user:password",
-	"ip":              "192.168.10.0/24",
-	"enabled":         ["SET", "DEL"]
+    "http_basic_auth": "user:password",
+    "ip":              "192.168.10.0/24",
+    "enabled":         ["SET", "DEL"]
 }
 ```
 ACLs are interpreted in order, later authorizations superseding earlier ones if a client matches several. The special value "*" matches all commands.
+
+## ACLs and Websocket clients
+
+These rules apply to WebSocket connections as well, although without support for HTTP Basic Auth filtering. IP filtering is supported.
+
+For JSON-based WebSocket clients, a rejected command will return this object (sent as a string in a binary frame):
+```json
+{"message": "Forbidden", "error": true, "http_status": 403}
+```
+The `http_status` code is an indicator of how Webdis would have responded if the client had used HTTP instead of a WebSocket connection, since WebSocket messages do not inherently have a status code.
+
+For raw Redis protocol WebSocket clients, a rejected command will produce this error (sent as a string in a binary frame):
+```
+-ERR Forbidden\r\n
+```
 
 # Environment variables
 
@@ -311,8 +339,8 @@ For this, the value must be a string starting with a dollar symbol and written i
 
 ```json
 {
-	"redis_host": "$REDIS_HOST",
-	"redis_port": "$REDIS_PORT",
+    "redis_host": "$REDIS_HOST",
+    "redis_port": "$REDIS_PORT",
 }
 ```
 
@@ -519,7 +547,7 @@ $ cd ~/src/webdis
 $ make
 $ vim webdis.json      # (edit the file to add "websockets": true)
 $ grep websockets webdis.json
-    "websockets":	true,
+    "websockets": true,
 $ ./webdis
 ```
 
@@ -537,11 +565,11 @@ xhr.onreadystatechange = checkData;
 xhr.send(null);
 
 function checkData() {
-	if(xhr.readyState == 3)  {
-    	response = xhr.responseText;
-    	chunk = response.slice(previous_response_length);
-    	previous_response_length = response.length;
-    	console.log(chunk);
+    if(xhr.readyState == 3)  {
+        response = xhr.responseText;
+        chunk = response.slice(previous_response_length);
+        previous_response_length = response.length;
+        console.log(chunk);
     }
 };
 ```
