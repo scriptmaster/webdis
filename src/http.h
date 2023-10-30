@@ -75,6 +75,9 @@ void
 http_crossdomain(struct http_client *c);
 
 void
+http_respond(struct http_client *c, char out[]);
+
+void
 http_send_error(struct http_client *c, short code, const char *msg);
 
 void

@@ -3,6 +3,8 @@
 #include "worker.h"
 #include "client.h"
 #include "slog.h"
+#include "garnet/strings.h"
+#include "api/routes.h"
 
 #include <string.h>
 #include <strings.h>
@@ -345,6 +347,27 @@ http_crossdomain(struct http_client *c) {
 	http_response_write(resp, c->fd);
 	http_client_reset(c);
 }
+
+/* http_respond with json request */
+void
+http_respond(struct http_client *c, char *out) {
+	struct http_response *resp = http_response_init(NULL, 200, "OK");
+
+	resp->http_version = c->http_version;
+	http_response_set_connection_header(c, resp);
+	http_response_set_header(resp, "Content-Type", "application/json", HEADER_COPY_NONE);
+
+	size_t strlen_out = strlen(out);
+	http_response_set_body(resp, out, strlen_out);
+
+	char outsz[10];
+	long_to_string(strlen_out, outsz);
+	slog(c->w->s, WEBDIS_DEBUG, outsz, sizeof(outsz));
+
+	http_response_write(resp, c->fd);
+	http_client_reset(c);
+}
+
 
 /* Simple error response */
 void

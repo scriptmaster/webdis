@@ -1,6 +1,8 @@
 #ifndef SLOG_H
 #define SLOG_H
 
+#include <sys/types.h>
+
 #define SLOG_MSG_MAX_LEN 124
 
 typedef enum {

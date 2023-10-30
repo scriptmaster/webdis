@@ -7,6 +7,7 @@
 #include "websocket.h"
 #include "conf.h"
 #include "server.h"
+#include "api/routes.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -207,11 +208,18 @@ worker_process_client(struct http_client *c) {
 
 	/* check that the command can be executed */
 	struct worker *w = c->w;
+
+	slog(w->s, WEBDIS_DEBUG, "REQ", 3);
+
 	cmd_response_t ret = CMD_PARAM_ERROR;
 	switch(c->parser.method) {
 		case HTTP_GET:
 			if(c->path_sz == 16 && memcmp(c->path, "/crossdomain.xml", 16) == 0) {
 				http_crossdomain(c);
+				return;
+			} else if (memcmp(c->path, "/api/", 5) == 0) {
+				//http_respond(c, "123123hvkgvkhbjhln\n");
+				api_routes(c);
 				return;
 			}
 			slog(w->s, WEBDIS_DEBUG, c->path, c->path_sz);

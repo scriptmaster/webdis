@@ -29,5 +29,5 @@
   },
 
   "verbosity": 4,
-  "logfile": "webdis.log"
+  "logfile": "./mebdis.log"
 }

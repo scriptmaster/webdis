@@ -72,16 +72,17 @@ endif
 
 OBJS_DEPS=$(wildcard *.d)
 DEPS=$(FORMAT_OBJS) $(HIREDIS_OBJ) $(JANSSON_OBJ) $(HTTP_PARSER_OBJS) $(B64_OBJS)
-OBJS=src/webdis.o src/cmd.o src/worker.o src/slog.o src/server.o src/acl.o src/md5/md5.o src/sha1/sha1.o src/http.o src/client.o src/websocket.o src/pool.o src/conf.o $(DEPS)
-
+BUILTINS=src/garnet/strings.o src/garnet/logging.o
+API_VERSIONS=src/api/routes.o src/api/v1.o src/api/v2.o
+OBJS=$(BUILTINS) src/webdis.o src/cmd.o src/worker.o src/slog.o src/server.o src/acl.o src/md5/md5.o src/sha1/sha1.o src/http.o src/client.o src/websocket.o src/pool.o src/conf.o $(API_VERSIONS) $(DEPS)
 
 PREFIX ?= /usr/local
 CONFDIR ?= $(DESTDIR)/etc
 SELF_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
 INSTALL_DIRS = $(DESTDIR)$(PREFIX) \
-	       $(DESTDIR)$(PREFIX)/bin \
-	       $(CONFDIR)
+			$(DESTDIR)$(PREFIX)/bin \
+			$(CONFDIR)
 
 all: $(OUT) Makefile
 
@@ -116,10 +117,14 @@ test:
 	./tests/pubsub -p $(WEBDIS_PORT)
 
 run:
+	killall webdis
 	./webdis &
 
 watch:
 	watchexec -e c,h -w src/ make all run
+
+watch_ceeppu:
+	watchexec -e ts -w src/ ceeppu
 
 memtest:
 	DEBUG=1 make all

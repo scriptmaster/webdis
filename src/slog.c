@@ -25,8 +25,7 @@ slog_init(struct server *s) {
 
 	s->log.self = getpid();
 
-	if(s->cfg->logfile) {
-
+	if(s->cfg->logfile && strlen(s->cfg->logfile) > 0) {
 		int old_fd = s->log.fd;
 
 		s->log.fd = open(s->cfg->logfile,
