@@ -6,9 +6,9 @@
 
 /*package/module/namespace logging*/
 //public
-void log(struct http_client *c, char* s) {
-  slog(c->w->s, WEBDIS_DEBUG, s, 0);
-}
+// void log(struct http_client *c, char* s) {
+//   // slog(c->w->s, WEBDIS_DEBUG, s, 0);
+// }
 
 
 

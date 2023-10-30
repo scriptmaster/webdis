@@ -1,4 +1,4 @@
-#include "logging.h"
+// #include "logging.h"
 #include "worker.h"
 #include "client.h"
 
@@ -9,7 +9,7 @@
 /*package/module/namespace routes*/
 //public
 void api_routes(struct http_client *c) {
-  log(c, "hi");
+  // log(c, "hi");
 }
 
 
