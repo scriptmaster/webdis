@@ -218,8 +218,8 @@ worker_process_client(struct http_client *c) {
 				http_crossdomain(c);
 				return;
 			} else if (memcmp(c->path, "/api/", 5) == 0) {
-				//http_respond(c, "123123hvkgvkhbjhln\n");
-				api_routes(c);
+				http_respond(c, "/api/\n");
+				//api_routes(c);
 				return;
 			}
 			slog(w->s, WEBDIS_DEBUG, c->path, c->path_sz);
