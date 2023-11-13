@@ -5,5 +5,13 @@
 // 	HEADER_CHECK_DUPE = 4
 // }
 
-declare interface http_header {
+declare interface http_client {
 }
+
+// declare enum webdis_log {
+//     WEBDIS_DEBUG = 0,
+// }
+
+// export const WEBDIS_DEBUG = 0;
+
+export {};

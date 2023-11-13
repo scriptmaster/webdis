@@ -219,7 +219,7 @@ worker_process_client(struct http_client *c) {
 				return;
 			} else if (memcmp(c->path, "/api/", 5) == 0) {
 				http_respond(c, "/api/\n");
-				//api_routes(c);
+				api_routes(c);
 				return;
 			}
 			slog(w->s, WEBDIS_DEBUG, c->path, c->path_sz);

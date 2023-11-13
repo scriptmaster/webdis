@@ -1,7 +1,6 @@
-// #include "logging.h"
+#include "garnet/logging.h"
 #include "worker.h"
 #include "client.h"
-
 
 
 //===== @@@@ AUTO-GENERATED BELOW. ONLY EDIT ABOVE @@@@ =====//
@@ -9,7 +8,7 @@
 /*package/module/namespace routes*/
 //public
 void api_routes(struct http_client *c) {
-  // log(c, "hi");
+  wlog(c, "hi");
 }
 
 
@@ -17,6 +16,6 @@ void api_routes(struct http_client *c) {
 /*
 filename: routes.ts
 
-"import \"logging\";\n\nexport function api_routes(c: http_client) {\n    log(c, \"hi\");\n}\n"
+"import \"logging\";\n\nexport function api_routes(c: http_client) {\n    wlog(c, \"hi\");\n}\n"
 */
 
