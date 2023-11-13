@@ -16,6 +16,6 @@ void api_routes(struct http_client *c) {
 /*
 filename: routes.ts
 
-"import \"client\";\n\n// @include(\"garnet/logging\", \"worker\", \"client\")\n// export default class {}\n\nexport function api_routes(c: http_client) {\n    wlog(c, \"hi\");\n}\n"
+"import \"client\";\n\nexport function api_routes(c: http_client) {\n    wlog(c, \"hi\");\n}\n"
 */
 
