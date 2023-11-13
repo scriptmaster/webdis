@@ -1,0 +1,5 @@
+{
+    "imports": {
+        "client": "./ctypes/client.d.ts"
+    }
+}

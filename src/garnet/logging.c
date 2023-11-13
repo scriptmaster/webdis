@@ -16,6 +16,6 @@ void wlog(struct http_client *c, char* s) {
 /*
 filename: logging.ts
 
-"\nexport function wlog(c: http_client, s: string) {\n    slog(c.w.s, WEBDIS_DEBUG, s, 0);\n}\n"
+"//import \"\"\n\nexport function wlog(c: http_client, s: string) {\n    slog(c.w.s, WEBDIS_DEBUG, s, 0);\n}\n"
 */
 

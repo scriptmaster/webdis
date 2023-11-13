@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "emitDecoratorMetadata": true,
+        "paths": {
+            "*": ["*"]
+        },
+        "include": ["src/**/*"]
+    }
+}

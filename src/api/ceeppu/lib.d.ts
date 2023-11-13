@@ -5,6 +5,10 @@ declare enum header_copy {
 	HEADER_CHECK_DUPE = 4
 }
 
-export declare interface http_header {
-	w: object;
+declare global {
+    // type http_client = {
+    //     w: object
+    // }
 }
+
+export {}
